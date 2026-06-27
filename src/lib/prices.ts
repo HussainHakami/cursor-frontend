@@ -1,22 +1,7 @@
-const CRYPTO_SUFFIX: Record<string, string> = {
-  BTC: 'BTC-USD',
-  ETH: 'ETH-USD',
-  SOL: 'SOL-USD',
-  DOGE: 'DOGE-USD',
-  ADA: 'ADA-USD',
-  XRP: 'XRP-USD',
-  DOT: 'DOT-USD',
-  AVAX: 'AVAX-USD',
-  LINK: 'LINK-USD',
-  MATIC: 'MATIC-USD',
-};
+import { normalizeTadawulSymbol } from '../types';
 
-function resolveSymbol(symbol: string, type: string): string {
-  const upper = symbol.toUpperCase().trim();
-  if (type === 'crypto') {
-    return CRYPTO_SUFFIX[upper] ?? `${upper}-USD`;
-  }
-  return upper;
+function resolveSymbol(symbol: string): string {
+  return normalizeTadawulSymbol(symbol);
 }
 
 export interface PriceResult {
@@ -24,16 +9,13 @@ export interface PriceResult {
   symbol: string;
 }
 
-export async function fetchPrice(
-  symbol: string,
-  type: string,
-): Promise<PriceResult> {
-  const yahooSymbol = resolveSymbol(symbol, type);
+export async function fetchPrice(symbol: string): Promise<PriceResult> {
+  const yahooSymbol = resolveSymbol(symbol);
   const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(yahooSymbol)}?interval=1d&range=1d`;
 
   const response = await fetch(url);
   if (!response.ok) {
-    throw new Error(`Failed to fetch price for ${symbol}`);
+    throw new Error(`تعذر جلب السعر لـ ${symbol}`);
   }
 
   const data = await response.json();
@@ -41,14 +23,14 @@ export async function fetchPrice(
   const price = result?.meta?.regularMarketPrice;
 
   if (typeof price !== 'number') {
-    throw new Error(`No price data found for ${symbol}`);
+    throw new Error(`لا توجد بيانات سعر لـ ${symbol}`);
   }
 
   return { price, symbol: yahooSymbol };
 }
 
 export async function fetchPrices(
-  items: { symbol: string; type: string; id: string }[],
+  items: { symbol: string; id: string }[],
 ): Promise<Map<string, number>> {
   const results = new Map<string, number>();
   const batchSize = 5;
@@ -57,7 +39,7 @@ export async function fetchPrices(
     const batch = items.slice(i, i + batchSize);
     const promises = batch.map(async (item) => {
       try {
-        const { price } = await fetchPrice(item.symbol, item.type);
+        const { price } = await fetchPrice(item.symbol);
         results.set(item.id, price);
       } catch {
         // skip failed fetches

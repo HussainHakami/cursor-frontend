@@ -1,5 +1,6 @@
 import { formatCurrency, formatPercent } from '../lib/format';
 import { cn } from '../lib/format';
+import { t } from '../lib/i18n';
 
 interface StatCardProps {
   label: string;
@@ -48,18 +49,18 @@ export function PortfolioStats({
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <StatCard label="Portfolio Value" value={formatCurrency(totalValue)} />
-      <StatCard label="Total Invested" value={formatCurrency(totalInvested)} />
+      <StatCard label={t.portfolioValue} value={formatCurrency(totalValue)} />
+      <StatCard label={t.totalInvested} value={formatCurrency(totalInvested)} />
       <StatCard
-        label="Total Gain / Loss"
+        label={t.totalGainLoss}
         value={formatCurrency(totalGain)}
         subValue={formatPercent(totalGainPercent)}
         trend={trend}
       />
       <StatCard
-        label="Holdings"
+        label={t.holdings}
         value={String(holdingsCount)}
-        subValue={holdingsCount === 1 ? '1 position' : `${holdingsCount} positions`}
+        subValue={holdingsCount === 1 ? t.onePosition : `${holdingsCount} ${t.positions}`}
         trend="neutral"
       />
     </div>

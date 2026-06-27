@@ -1,4 +1,4 @@
-export type AssetType = 'stock' | 'etf' | 'crypto' | 'bond' | 'other';
+export type AssetType = 'stock' | 'etf' | 'sukuk' | 'reit' | 'fund' | 'other';
 
 export interface Holding {
   id: string;
@@ -27,11 +27,12 @@ export interface AllocationSlice {
 }
 
 export const ASSET_TYPES: { value: AssetType; label: string }[] = [
-  { value: 'stock', label: 'Stock' },
-  { value: 'etf', label: 'ETF' },
-  { value: 'crypto', label: 'Crypto' },
-  { value: 'bond', label: 'Bond' },
-  { value: 'other', label: 'Other' },
+  { value: 'stock', label: 'أسهم' },
+  { value: 'etf', label: 'صناديق مؤشرات' },
+  { value: 'sukuk', label: 'صكوك' },
+  { value: 'reit', label: 'صناديق عقارية' },
+  { value: 'fund', label: 'صناديق استثمارية' },
+  { value: 'other', label: 'أخرى' },
 ];
 
 export const ALLOCATION_COLORS = [
@@ -80,11 +81,18 @@ export function computeAllocation(holdings: Holding[]): AllocationSlice[] {
   const byType = new Map<string, number>();
   for (const h of holdings) {
     const value = computeHoldingValue(h);
-    byType.set(h.type, (byType.get(h.type) ?? 0) + value);
+    const label = ASSET_TYPES.find((t) => t.value === h.type)?.label ?? h.type;
+    byType.set(label, (byType.get(label) ?? 0) + value);
   }
   return Array.from(byType.entries()).map(([name, value], i) => ({
-    name: name.charAt(0).toUpperCase() + name.slice(1),
+    name,
     value,
     color: ALLOCATION_COLORS[i % ALLOCATION_COLORS.length],
   }));
+}
+
+export function normalizeTadawulSymbol(symbol: string): string {
+  const trimmed = symbol.trim().toUpperCase();
+  if (trimmed.endsWith('.SR')) return trimmed;
+  return `${trimmed}.SR`;
 }

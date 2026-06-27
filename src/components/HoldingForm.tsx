@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { AssetType, Holding } from '../types';
 import { ASSET_TYPES } from '../types';
 import { cn } from '../lib/format';
+import { ASSET_TYPE_LABELS, t } from '../lib/i18n';
 
 interface HoldingFormProps {
   onSubmit: (holding: Omit<Holding, 'id'>) => void;
@@ -41,24 +42,24 @@ export function HoldingForm({ onSubmit, onCancel, initial }: HoldingFormProps) {
     const purchasePrice = parseFloat(form.purchasePrice);
 
     if (!form.symbol.trim()) {
-      setError('Symbol is required');
+      setError(t.symbolRequired);
       return;
     }
     if (!form.name.trim()) {
-      setError('Name is required');
+      setError(t.nameRequired);
       return;
     }
     if (isNaN(quantity) || quantity <= 0) {
-      setError('Quantity must be a positive number');
+      setError(t.quantityInvalid);
       return;
     }
     if (isNaN(purchasePrice) || purchasePrice <= 0) {
-      setError('Purchase price must be a positive number');
+      setError(t.priceInvalid);
       return;
     }
 
     onSubmit({
-      symbol: form.symbol.trim().toUpperCase(),
+      symbol: form.symbol.trim().replace(/\.SR$/i, ''),
       name: form.name.trim(),
       type: form.type,
       quantity,
@@ -80,47 +81,49 @@ export function HoldingForm({ onSubmit, onCancel, initial }: HoldingFormProps) {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <label className="mb-1 block text-sm font-medium text-text-secondary">
-            Symbol
+            {t.symbol}
           </label>
           <input
             type="text"
             value={form.symbol}
             onChange={(e) => setForm({ ...form, symbol: e.target.value })}
-            placeholder="AAPL"
-            className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none focus:border-accent focus:ring-1 focus:ring-accent"
+            placeholder={t.symbolPlaceholder}
+            dir="ltr"
+            className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-end outline-none focus:border-accent focus:ring-1 focus:ring-accent"
           />
+          <p className="mt-1 text-xs text-text-secondary">{t.symbolHint}</p>
         </div>
         <div>
           <label className="mb-1 block text-sm font-medium text-text-secondary">
-            Name
+            {t.name}
           </label>
           <input
             type="text"
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
-            placeholder="Apple Inc."
+            placeholder={t.namePlaceholder}
             className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none focus:border-accent focus:ring-1 focus:ring-accent"
           />
         </div>
         <div>
           <label className="mb-1 block text-sm font-medium text-text-secondary">
-            Asset Type
+            {t.assetType}
           </label>
           <select
             value={form.type}
             onChange={(e) => setForm({ ...form, type: e.target.value as AssetType })}
             className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none focus:border-accent focus:ring-1 focus:ring-accent"
           >
-            {ASSET_TYPES.map((t) => (
-              <option key={t.value} value={t.value}>
-                {t.label}
+            {ASSET_TYPES.map((typeOption) => (
+              <option key={typeOption.value} value={typeOption.value}>
+                {typeOption.label}
               </option>
             ))}
           </select>
         </div>
         <div>
           <label className="mb-1 block text-sm font-medium text-text-secondary">
-            Purchase Date
+            {t.purchaseDate}
           </label>
           <input
             type="date"
@@ -131,7 +134,7 @@ export function HoldingForm({ onSubmit, onCancel, initial }: HoldingFormProps) {
         </div>
         <div>
           <label className="mb-1 block text-sm font-medium text-text-secondary">
-            Quantity
+            {t.quantity}
           </label>
           <input
             type="number"
@@ -139,13 +142,14 @@ export function HoldingForm({ onSubmit, onCancel, initial }: HoldingFormProps) {
             min="0"
             value={form.quantity}
             onChange={(e) => setForm({ ...form, quantity: e.target.value })}
-            placeholder="10"
-            className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none focus:border-accent focus:ring-1 focus:ring-accent"
+            placeholder={t.quantityPlaceholder}
+            dir="ltr"
+            className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-end outline-none focus:border-accent focus:ring-1 focus:ring-accent"
           />
         </div>
         <div>
           <label className="mb-1 block text-sm font-medium text-text-secondary">
-            Purchase Price (per unit)
+            {t.purchasePrice}
           </label>
           <input
             type="number"
@@ -153,25 +157,26 @@ export function HoldingForm({ onSubmit, onCancel, initial }: HoldingFormProps) {
             min="0"
             value={form.purchasePrice}
             onChange={(e) => setForm({ ...form, purchasePrice: e.target.value })}
-            placeholder="150.00"
-            className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none focus:border-accent focus:ring-1 focus:ring-accent"
+            placeholder={t.pricePlaceholder}
+            dir="ltr"
+            className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-end outline-none focus:border-accent focus:ring-1 focus:ring-accent"
           />
         </div>
       </div>
 
-      <div className="flex justify-end gap-3 pt-2">
+      <div className="flex justify-start gap-3 pt-2">
+        <button
+          type="submit"
+          className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white transition hover:bg-accent-hover"
+        >
+          {initial ? t.saveChanges : t.addHolding}
+        </button>
         <button
           type="button"
           onClick={onCancel}
           className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-text-secondary transition hover:bg-surface-overlay"
         >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white transition hover:bg-accent-hover"
-        >
-          {initial ? 'Save Changes' : 'Add Holding'}
+          {t.cancel}
         </button>
       </div>
     </form>
@@ -213,14 +218,15 @@ export function TypeBadge({ type }: { type: AssetType }) {
   const colors: Record<AssetType, string> = {
     stock: 'bg-blue-500/20 text-blue-400',
     etf: 'bg-purple-500/20 text-purple-400',
-    crypto: 'bg-orange-500/20 text-orange-400',
-    bond: 'bg-emerald-500/20 text-emerald-400',
+    sukuk: 'bg-emerald-500/20 text-emerald-400',
+    reit: 'bg-orange-500/20 text-orange-400',
+    fund: 'bg-cyan-500/20 text-cyan-400',
     other: 'bg-slate-500/20 text-slate-400',
   };
 
   return (
-    <span className={cn('rounded-md px-2 py-0.5 text-xs font-medium capitalize', colors[type])}>
-      {type}
+    <span className={cn('rounded-md px-2 py-0.5 text-xs font-medium', colors[type])}>
+      {ASSET_TYPE_LABELS[type]}
     </span>
   );
 }

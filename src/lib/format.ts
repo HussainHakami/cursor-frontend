@@ -1,7 +1,7 @@
 export function formatCurrency(value: number): string {
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat('ar-SA', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'SAR',
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(value);
@@ -13,10 +13,22 @@ export function formatPercent(value: number): string {
 }
 
 export function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('en-US', {
+  return new Date(dateStr).toLocaleDateString('ar-SA', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
+    calendar: 'gregory',
+  });
+}
+
+export function formatDateTime(date: Date): string {
+  return date.toLocaleString('ar-SA', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    calendar: 'gregory',
   });
 }
 

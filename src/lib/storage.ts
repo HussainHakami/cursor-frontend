@@ -1,6 +1,6 @@
 import type { Holding } from '../types';
 
-const STORAGE_KEY = 'investment-tracker-holdings';
+const STORAGE_KEY = 'saudi-investment-tracker-holdings';
 
 export function loadHoldings(): Holding[] {
   try {

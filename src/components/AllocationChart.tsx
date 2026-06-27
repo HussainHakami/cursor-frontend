@@ -1,6 +1,7 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import type { AllocationSlice } from '../types';
 import { formatCurrency } from '../lib/format';
+import { t } from '../lib/i18n';
 
 interface AllocationChartProps {
   data: AllocationSlice[];
@@ -10,7 +11,7 @@ export function AllocationChart({ data }: AllocationChartProps) {
   if (data.length === 0) {
     return (
       <div className="flex h-64 items-center justify-center text-text-secondary">
-        Add holdings to see allocation
+        {t.addHoldingsForAllocation}
       </div>
     );
   }
@@ -40,10 +41,12 @@ export function AllocationChart({ data }: AllocationChartProps) {
             border: '1px solid #2d3a4f',
             borderRadius: '8px',
             color: '#f1f5f9',
+            direction: 'rtl',
+            fontFamily: 'IBM Plex Sans Arabic, sans-serif',
           }}
           formatter={(value: number) => [
             `${formatCurrency(value)} (${((value / total) * 100).toFixed(1)}%)`,
-            'Value',
+            t.chartValue,
           ]}
         />
         <Legend

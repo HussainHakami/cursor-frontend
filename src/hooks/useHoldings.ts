@@ -31,7 +31,7 @@ export function useHoldings() {
     setRefreshing(true);
     try {
       const prices = await fetchPrices(
-        holdings.map((h) => ({ symbol: h.symbol, type: h.type, id: h.id })),
+        holdings.map((h) => ({ symbol: h.symbol, id: h.id })),
       );
       const now = new Date().toISOString();
       setHoldings((prev) =>

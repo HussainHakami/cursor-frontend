@@ -5,6 +5,8 @@ import { PortfolioStats } from './components/PortfolioStats';
 import { AllocationChart } from './components/AllocationChart';
 import { HoldingsTable, TopHoldings } from './components/HoldingsTable';
 import { HoldingForm, Modal } from './components/HoldingForm';
+import { formatDateTime } from './lib/format';
+import { t } from './lib/i18n';
 import type { Holding } from './types';
 
 function App() {
@@ -47,8 +49,8 @@ function App() {
               </svg>
             </div>
             <div>
-              <h1 className="text-lg font-semibold">Investment Tracker</h1>
-              <p className="text-xs text-text-secondary">Portfolio overview</p>
+              <h1 className="text-lg font-semibold">{t.appTitle}</h1>
+              <p className="text-xs text-text-secondary">{t.appSubtitle}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -70,7 +72,7 @@ function App() {
                   d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                 />
               </svg>
-              {refreshing ? 'Updating...' : 'Refresh Prices'}
+              {refreshing ? t.updating : t.refreshPrices}
             </button>
             <button
               onClick={() => setShowAddModal(true)}
@@ -79,7 +81,7 @@ function App() {
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
-              Add Holding
+              {t.addHolding}
             </button>
           </div>
         </div>
@@ -88,7 +90,7 @@ function App() {
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
         {lastRefresh && (
           <p className="mb-4 text-xs text-text-secondary">
-            Prices last updated {lastRefresh.toLocaleString()}
+            {t.pricesLastUpdated}: {formatDateTime(lastRefresh)}
           </p>
         )}
 
@@ -98,20 +100,20 @@ function App() {
 
         <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
           <div className="rounded-xl border border-border bg-surface-raised p-5 lg:col-span-2">
-            <h2 className="mb-4 text-base font-semibold">Asset Allocation</h2>
+            <h2 className="mb-4 text-base font-semibold">{t.assetAllocation}</h2>
             <AllocationChart data={allocation} />
           </div>
           <div className="rounded-xl border border-border bg-surface-raised p-5">
-            <h2 className="mb-4 text-base font-semibold">Top Holdings</h2>
+            <h2 className="mb-4 text-base font-semibold">{t.topHoldings}</h2>
             <TopHoldings holdings={holdings} />
             {holdings.length === 0 && (
-              <p className="text-sm text-text-secondary">No holdings to display</p>
+              <p className="text-sm text-text-secondary">{t.noHoldingsToDisplay}</p>
             )}
           </div>
         </div>
 
         <section className="rounded-xl border border-border bg-surface-raised p-5">
-          <h2 className="mb-4 text-base font-semibold">All Holdings</h2>
+          <h2 className="mb-4 text-base font-semibold">{t.allHoldings}</h2>
           <HoldingsTable
             holdings={holdings}
             onEdit={setEditingHolding}
@@ -120,14 +122,14 @@ function App() {
         </section>
       </main>
 
-      <Modal open={showAddModal} onClose={() => setShowAddModal(false)} title="Add Holding">
+      <Modal open={showAddModal} onClose={() => setShowAddModal(false)} title={t.addHoldingModal}>
         <HoldingForm onSubmit={handleAdd} onCancel={() => setShowAddModal(false)} />
       </Modal>
 
       <Modal
         open={editingHolding !== null}
         onClose={() => setEditingHolding(null)}
-        title="Edit Holding"
+        title={t.editHoldingModal}
       >
         {editingHolding && (
           <HoldingForm

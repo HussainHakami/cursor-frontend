@@ -1,36 +1,47 @@
-# Investment Tracker
+# متتبع الاستثمار - السوق السعودي
 
-A modern portfolio tracker built with React, TypeScript, and Tailwind CSS.
+تطبيق ويب حديث لمتابعة محفظة الاستثمار في السوق السعودي (تداول)، مبني بـ React و TypeScript و Tailwind CSS.
 
-## Features
+## المميزات
 
-- **Portfolio dashboard** — total value, invested amount, gain/loss, and position count
-- **Holdings management** — add, edit, and delete investments (stocks, ETFs, crypto, bonds)
-- **Live price updates** — fetch current prices via Yahoo Finance
-- **Asset allocation chart** — visual breakdown by asset type
-- **Top holdings** — ranked view of your largest positions
-- **Local persistence** — data saved in browser localStorage
+- **لوحة تحكم المحفظة** — قيمة المحفظة، المبلغ المستثمر، الربح/الخسارة، وعدد الاستثمارات
+- **إدارة الاستثمارات** — إضافة وتعديل وحذف الأسهم والصناديق والصكوك وصناديق الريت
+- **تحديث الأسعار** — جلب أسعار تداول مباشرة عبر Yahoo Finance (رمز `.SR`)
+- **توزيع الأصول** — رسم بياني لتوزيع المحفظة حسب نوع الأصل
+- **أكبر الاستثمارات** — عرض مرتب لأكبر المراكز في المحفظة
+- **حفظ محلي** — البيانات تُخزَّن في متصفحك (localStorage)
+- **واجهة عربية** — دعم كامل للغة العربية واتجاه RTL
+- **العملة** — جميع المبالغ بالريال السعودي (ر.س)
 
-## Getting Started
+## البدء
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173) in your browser.
+افتح [http://localhost:5173](http://localhost:5173) في المتصفح.
 
-## Build
+## أمثلة رموز تداول
+
+| الرمز | الشركة |
+|-------|--------|
+| 2222 | أرامكو السعودية |
+| 1120 | الراجحي |
+| 2010 | سابك |
+| 7010 | الاتصالات السعودية |
+
+## البناء
 
 ```bash
 npm run build
 npm run preview
 ```
 
-## Tech Stack
+## التقنيات
 
-- [Vite](https://vitejs.dev/) — build tool
-- [React 19](https://react.dev/) — UI framework
-- [TypeScript](https://www.typescriptlang.org/) — type safety
-- [Tailwind CSS 4](https://tailwindcss.com/) — styling
-- [Recharts](https://recharts.org/) — charts
+- [Vite](https://vitejs.dev/) — أداة البناء
+- [React 19](https://react.dev/) — واجهة المستخدم
+- [TypeScript](https://www.typescriptlang.org/) — الأمان النوعي
+- [Tailwind CSS 4](https://tailwindcss.com/) — التنسيق
+- [Recharts](https://recharts.org/) — الرسوم البيانية
