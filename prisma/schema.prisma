@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Stock {
+  id            String          @id @default(cuid())
+  symbol        String          @unique
+  nameAr        String
+  nameEn        String
+  sector        String
+  currentPrice  Float
+  previousClose Float
+  dayHigh       Float
+  dayLow        Float
+  volume        Int             @default(0)
+  marketCap     Float           @default(0)
+  pe            Float?
+  dividendYield Float?
+  updatedAt     DateTime        @updatedAt
+  holdings      Holding[]
+  transactions  Transaction[]
+  watchlist     WatchlistItem[]
+  dividends     Dividend[]
+  priceHistory  PriceHistory[]
+}
+
+model Portfolio {
+  id          String        @id @default(cuid())
+  name        String
+  description String?
+  color       String        @default("#006C35")
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  holdings    Holding[]
+  transactions Transaction[]
+}
+
+model Holding {
+  id           String    @id @default(cuid())
+  portfolioId  String
+  stockId      String
+  quantity     Float
+  avgBuyPrice  Float
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  portfolio    Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  stock        Stock     @relation(fields: [stockId], references: [id])
+
+  @@unique([portfolioId, stockId])
+}
+
+model Transaction {
+  id          String   @id @default(cuid())
+  portfolioId String
+  stockId     String
+  type        String
+  quantity    Float
+  price       Float
+  fees        Float    @default(0)
+  date        DateTime
+  notes       String?
+  createdAt   DateTime @default(now())
+  portfolio   Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  stock       Stock    @relation(fields: [stockId], references: [id])
+}
+
+model WatchlistItem {
+  id        String   @id @default(cuid())
+  stockId   String
+  notes     String?
+  targetPrice Float?
+  createdAt DateTime @default(now())
+  stock     Stock    @relation(fields: [stockId], references: [id], onDelete: Cascade)
+
+  @@unique([stockId])
+}
+
+model Dividend {
+  id        String   @id @default(cuid())
+  stockId   String
+  amount    Float
+  date      DateTime
+  createdAt DateTime @default(now())
+  stock     Stock    @relation(fields: [stockId], references: [id], onDelete: Cascade)
+}
+
+model PriceHistory {
+  id        String   @id @default(cuid())
+  stockId   String
+  price     Float
+  date      DateTime
+  stock     Stock    @relation(fields: [stockId], references: [id], onDelete: Cascade)
+
+  @@unique([stockId, date])
+}
